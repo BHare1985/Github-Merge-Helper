@@ -1,13 +1,9 @@
 (function() {	
-	function rafAsync() {
-		return new Promise(resolve => {
-			requestAnimationFrame(resolve);
-		});
-	}
-
 	async function checkElement(selector) {
 		while (document.querySelector(selector) === null) {
-			await rafAsync()
+			await new Promise(resolve => {
+				requestAnimationFrame(resolve);
+			});
 		}
 		return true;
 	}  
@@ -42,17 +38,29 @@
 		document.querySelector("div.merge-message").prepend(p);	
 	}
 	
-	checkElement('.BtnGroup') //use whichever selector you want
-	.then((element) => {
-		var labelExists = document.querySelector(".IssueLabel[title='DontSquash']");
-		var action = labelExists ? "merge" : "squash";
+	function execute(){
+		if (!window.location.pathname.match(/\/*\/*\/pull\/\d+/gm) ) {
+			return;
+		}
 
-		hideAllButtons();
-		disableAllButtons();
-		enableButton(action);
-		showButton(action);
-		addMessage();
-	});
+		checkElement('.BtnGroup') //use whichever selector you want
+		.then((element) => {
+			var labelExists = document.querySelector(".IssueLabel[title='DontSquash']");
+			var action = labelExists ? "merge" : "squash";
+
+			hideAllButtons();
+			disableAllButtons();
+			enableButton(action);
+			showButton(action);
+			addMessage();
+		});
+	}
+
+	document.addEventListener('pjax:success', function() {
+		execute();
+	});	
+	
+	execute();
 })();
 
 	
