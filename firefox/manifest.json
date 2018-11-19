@@ -1,0 +1,18 @@
+{
+	"manifest_version": 2,
+	"name": "Github Merge Helper",
+	"version": "0.0.4",
+	"icons": {
+		"48": "icon-48.png",
+		"96": "icon-96.png"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"*://github.com/*"
+			],
+			"js": ["gmh.js"],
+			"run_at": "document_end"
+		}
+	]
+}

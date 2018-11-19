@@ -43,7 +43,7 @@
 			return;
 		}
 
-		checkElement('.BtnGroup') //use whichever selector you want
+		checkElement("button[value='squash']")
 		.then((element) => {
 			var labelExists = document.querySelector(".IssueLabel[title='DontSquash']");
 			var action = labelExists ? "merge" : "squash";
