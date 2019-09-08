@@ -8,32 +8,37 @@
 		return true;
 	}  
 
-	function hideAllButtons(){
-		document.querySelectorAll(".BtnGroup").forEach(function(el){
-			el.style.display = "none";
-		});	
+	function getButtons(){
+		return document.querySelectorAll("[class^='btn-group-']");
 	}
 	
-	function disableAllButtons(){
-		document.querySelectorAll("button[name='do']").forEach(function(el){
+	function getButton(action){
+		return document.querySelectorAll("[class^=btn-group-"+action+"]");
+	}
+
+	function enable(elements){
+		elements.forEach(function(el){
+			el.disabled = false;
+			el.type = "submit";
+		});
+	}
+	
+	function disable(elements){
+		elements.forEach(function(el){
+			el.disabled = true;
 			el.type = "button";
 		});
 	}
 	
-	function enableButton(action){
-		document.querySelector("button[value='"+action+"']").type = "submit";
-		document.querySelector("button[value='"+action+"']").style.display = "block";	
+	function click(action){
+		document.querySelectorAll("button.select-menu-item[value='"+action+"']").forEach(function(el){ 
+			el.click();
+        });
 	}
 	
-	function showButton(action){
-		document.querySelectorAll(".btn-group-" + action).forEach(function(el){
-			el.style.display = "block";
-		});	
-	}
-	
-	function addMessage(){
+	function addMessage(action){
 		var p = document.createElement('p');
-		p.textContent = "The merge button has been automatically changed by Github Merge Helper";
+		p.textContent = "The merge button has been set to "+action+" by Github Merge Helper";
 
 		document.querySelector("div.merge-message").prepend(p);	
 	}
@@ -47,12 +52,17 @@
 		.then((element) => {
 			var labelExists = document.querySelector(".IssueLabel[title='DontSquash']");
 			var action = labelExists ? "merge" : "squash";
-
-			hideAllButtons();
-			disableAllButtons();
-			enableButton(action);
-			showButton(action);
-			addMessage();
+			
+			var buttons = getButtons();
+			var actionButton = getButton(action);
+		
+			disable(buttons);
+			enable(actionButton);
+			
+			setTimeout(function(){
+				click(action);
+				addMessage(action);
+			}, 200);
 		});
 	}
 
